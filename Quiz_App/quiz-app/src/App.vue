@@ -11,6 +11,7 @@ export default {
   data() {
     return {
       questionsAnswered: 0,
+      totalCorrect: 0,
       questions: [
         {
           q: 'What is 2 + 2?',
@@ -87,16 +88,34 @@ export default {
         }
       ]
     }
-  }
-}
+  },
+  methods: {
+    questionAnswered(is_correct) {
+      if (is_correct) {
+        this.totalCorrect++;
+      }
+      this.questionsAnswered++;
+    },
+    reset() {
+      this.questionsAnswered = 0;
+      this.totalCorrect = 0;
+    }
+  },
+};
 
 </script>
 
 <template>
   <div class="ctr">
-    <questions v-if="questionsAnswered < questions.length" :questions="questions" />
-    <result v-else />
-    <button button type=" button" class="reset-btn">Reset</button>
+    <Transition name="fade" mode="out-in">
+
+      <questions v-if="questionsAnswered < questions.length" :questions="questions"
+        :questionsAnswered="questionsAnswered" @question-answered="questionAnswered" />
+      <result v-else :results="results" :totalCorrect="totalCorrect" />
+    </Transition>
+
+    <button button type=" button" class="reset-btn" @click.prevent="reset"
+      v-if="questionsAnswered === questions.length">Reset</button>
   </div>
 </template>
 
