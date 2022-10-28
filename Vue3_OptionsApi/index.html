@@ -11,9 +11,15 @@
 
 
     <div id="shopping-list">
-        <!-- The header defaults to Shopping List App!! if it's removed -->
-        <h1>{{ Header || 'Shopping List App!!'}}</h1>
-        <div class="add-item-form">
+        <div class="header">
+            <!-- The header defaults to Shopping List App!! if it's removed -->
+            <h1>{{ Header || 'Shopping List App!!'}}</h1>
+            <button v-if="editing" @click="doEdit(false)" class="btn btn-cancel">Cancel</button>
+            <button @click="doEdit(true)" v-else class="btn btn-primary">Add Item</button>
+        </div>
+
+
+        <div v-if="editing" class="add-item-form">
             <!-- Two way data-binding between the input and newitem using v-model -->
             <!--Click event listening to etner -->
             <input @keyup.enter="saveItem" v-model="newItem" type="text" placeholder="Add a new item" />
@@ -38,13 +44,13 @@
         <label><input v-model="iceCreamFlavours" type="checkbox" value="Mango" />Mango</label>
         <label><input v-model="iceCreamFlavours" type="checkbox" value="Strawberry" />Strawberry</label> -->
 
-
+        <p v-if="items.length === 0">Nice job!. You've bought all your items!</p>
         <ul>
-            <li v-for="item in items" :key="item.id">{{item.label}}</li>
+            <li v-for="item in items" :key="item.id">
+                <h1>{{item.label}} </h1>
+            </li>
             <!-- Another way to write this is: -->
             <!-- <li v-for="{id,label} in items" :key="id">{{label}}</li> -->
-
-
         </ul>
         <!-- <hr>
         Debugger
@@ -58,13 +64,14 @@
             data() {
                 return {
                     Header: 'Shopping List App',
+                    editing: false,
                     newItem: '',
                     // iceCreamFlavours: [],
                     newItemHighPriority: false,
                     items: [
-                        { id: 1, label: "10 Party hats" },
-                        { id: 2, label: "2 board games" },
-                        { id: 3, label: "20 cups" },
+                        // { id: 1, label: "10 Party hats" },
+                        // { id: 2, label: "2 board games" },
+                        // { id: 3, label: "20 cups" },
                     ],
 
                 }
@@ -72,6 +79,10 @@
             methods: {
                 saveItem() {
                     this.items.push({ it: this.items.length + 1, label: this.newItem })
+                    this.newItem = ""
+                },
+                doEdit(editing) {
+                    this.editing = editing
                     this.newItem = ""
                 }
             }
