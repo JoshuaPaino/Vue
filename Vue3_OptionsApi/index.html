@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping List App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+
+    <div id="shopping-list">
+        <!-- The header defaults to Shopping List App!! if it's removed -->
+        <h1>{{ Header || 'Shopping List App!!'}}</h1>
+        <div class="add-item-form">
+            <!-- Two way data-binding between the input and newitem using v-model -->
+            <!--Click event listening to etner -->
+            <input @keyup.enter="saveItem" v-model="newItem" type="text" placeholder="Add a new item" />
+
+            <label>
+                <input v-model="newItemHighPriority" type="checkbox" />
+                High Priority
+            </label>
+            <!-- Click event listening to the button-->
+            <button @click="saveItem" class="btn btn-primary">Save
+                Item</button>
+        </div>
+
+        <br>
+
+
+
+        <!-- Two way binding of an array in Vue -->
+        <!-- <label><input v-model="iceCreamFlavours" type="checkbox" value="Vanilla" />Vanilla</label>
+        <label><input v-model="iceCreamFlavours" type="checkbox" value="Chocolate" />Chocolate</label>
+        <label><input v-model="iceCreamFlavours" type="checkbox" value="Banana" />Banana</label>
+        <label><input v-model="iceCreamFlavours" type="checkbox" value="Mango" />Mango</label>
+        <label><input v-model="iceCreamFlavours" type="checkbox" value="Strawberry" />Strawberry</label> -->
+
+
+        <ul>
+            <li v-for="item in items" :key="item.id">{{item.label}}</li>
+            <!-- Another way to write this is: -->
+            <!-- <li v-for="{id,label} in items" :key="id">{{label}}</li> -->
+
+
+        </ul>
+        <!-- <hr>
+        Debugger
+        <H1> {{newItem}} &bull; {{newItemHighPriority}} &bull; {{iceCreamFlavours}}</H1> -->
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+
+        Vue.createApp({
+            data() {
+                return {
+                    Header: 'Shopping List App',
+                    newItem: '',
+                    // iceCreamFlavours: [],
+                    newItemHighPriority: false,
+                    items: [
+                        { id: 1, label: "10 Party hats" },
+                        { id: 2, label: "2 board games" },
+                        { id: 3, label: "20 cups" },
+                    ],
+
+                }
+            },
+            methods: {
+                saveItem() {
+                    this.items.push({ it: this.items.length + 1, label: this.newItem })
+                    this.newItem = ""
+                }
+            }
+        }).mount('#shopping-list')
+    </script>
+</body>
+
+</html>
