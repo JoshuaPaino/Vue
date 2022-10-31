@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '../views/Home.vue'
+import sourceData from '@/data.json'
 
 
 const router = createRouter({
@@ -11,61 +12,38 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/about',
-      name: 'about',
+
+      path: '/destination/:id/:slug',
+      name: 'destination.show',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/DestinationShow.vue'),
+      props: route => ({ ...route.params, id: parseInt(route.params.id) }),
+      beforeEnter(to, from) {
+        const exists = sourceData.destinations.find(
+          destination => destination.id === parseInt(to.params.id)
+        )
+        if (!exists) return {
+          name: 'NotFound',
+          params: { pathMatch: to.path.split('/').slice(1) },
+          query: to.query,
+          hash: to.hash,
+        }
+      },
+      children: [
+        {
+          path: ':experienceSlug',
+          name: 'experience.show',
+          component: () => import('@/views/ExperienceShow.vue'),
+          props: route => ({ ...route.params, id: parseInt(route.params.id) })
+        }
+      ]
     },
     {
-
-      path: '/hawaii',
-      name: 'hawaii',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/HawaiiView.vue')
-
-    },
-    {
-
-      path: '/jamaica',
-      name: 'Jamaaica',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/JamaicaView.vue')
-
-    },
-    {
-
-      path: '/panama',
-      name: 'panama',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/PanamaView.vue')
-
-    },
-    {
-
-      path: '/brazil',
-      name: 'brazil',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/BrazilView.vue')
-
-    },
-    {
-
-      path: '/destination/:id',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/DestinationShow.vue')
-
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('@/views/NotFound.vue')
     },
   ], linkActiveClass: 'vActiveLink'
 })
